@@ -20,7 +20,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '~/store';
 import { ThunkDeletePlate, ThunkGetPlate } from '~/store/plate/thunks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import PlateDialogView from './PlateDialogView';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,6 +46,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function PlateTableView() {
   const dispatch = useDispatch<ThunkDispatch<RootState, unknown, AnyAction>>();
   const { plates = [] } = useSelector((state: any) => state.plate);
+  const { initialAuth } = useSelector((state: any) => state.auth);
   const navigate = useNavigate();
 
   const handleUpdate = (plate: Plate) => {
@@ -52,52 +54,77 @@ export default function PlateTableView() {
   };
 
   useEffect(() => {
-    dispatch(ThunkGetPlate());
-  }, [plates]);
+    dispatch(ThunkGetPlate(initialAuth.uid));
+  }, [dispatch, plates]);
 
   const handleDelete = (id: string) => {
+    handleOpenDialog();
+    setId(id);
+  };
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [id, setId] = useState<string>('');
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  const handleActionDialog = () => {
     dispatch(ThunkDeletePlate(id));
+    setOpen(false);
     navigate(`/plate`);
   };
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label='customized table'>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell align='right'>Id</StyledTableCell>
-            <StyledTableCell align='right'>Name</StyledTableCell>
-            <StyledTableCell align='right'>Date</StyledTableCell>
-            <StyledTableCell align='right'>Offer</StyledTableCell>
-            <StyledTableCell align='right'>Update</StyledTableCell>
-            <StyledTableCell align='right'>Delete</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {plates.map((plate: Plate) => (
-            <StyledTableRow key={plate.id}>
-              <StyledTableCell align='right'>{plate.id}</StyledTableCell>
-              <StyledTableCell align='right'>{plate.name}</StyledTableCell>
-              <StyledTableCell align='right'>
-                {dayjs(plate.dateActivity).format('YYYY-MM-DD')}
-              </StyledTableCell>
-              <StyledTableCell align='right'>{plate.offer.toString()}</StyledTableCell>
-              <StyledTableCell align='right'>
-                <IconButton color='inherit' onClick={() => handleUpdate(plate)}>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell align='right'>Id</StyledTableCell>
+              <StyledTableCell align='right'>Name</StyledTableCell>
+              <StyledTableCell align='right'>Date</StyledTableCell>
+              <StyledTableCell align='right'>Offer</StyledTableCell>
+              <StyledTableCell align='right'>Update</StyledTableCell>
+              <StyledTableCell align='right'>Delete</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {plates.map((plate: Plate) => (
+              <StyledTableRow key={plate.id}>
+                <StyledTableCell align='right'>{plate.id}</StyledTableCell>
+                <StyledTableCell align='right'>{plate.name}</StyledTableCell>
+                <StyledTableCell align='right'>
+                  {dayjs(plate.dateActivity).format('YYYY-MM-DD')}
+                </StyledTableCell>
+                <StyledTableCell align='right'>{plate.offer.toString()}</StyledTableCell>
+                <StyledTableCell align='right'>
+                  <IconButton color='inherit' onClick={() => handleUpdate(plate)}>
+                    {' '}
+                    <ModeEditIcon />
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align='right'>
                   {' '}
-                  <ModeEditIcon />
-                </IconButton>
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                {' '}
-                <IconButton color='inherit' onClick={() => handleDelete(plate?.id ?? '')}>
-                  {' '}
-                  <DeleteIcon />
-                </IconButton>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                  <IconButton color='inherit' onClick={() => handleDelete(plate?.id ?? '')}>
+                    {' '}
+                    <DeleteIcon />
+                  </IconButton>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <PlateDialogView
+        open={open}
+        title={'Confirmation'}
+        message='Do you want to delete this plate?'
+        handleClose={handleCloseDialog}
+        action={handleActionDialog}
+      ></PlateDialogView>
+    </>
   );
 }

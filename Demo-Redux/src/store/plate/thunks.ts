@@ -5,9 +5,10 @@ import { deletePlate, getPlate, getPlateId, saveNewPlate, updatePlate } from './
 import { plateApi } from '~/api/plateApi';
 import { Plate } from '~/plate/modals/Plate.models';
 
-export const ThunkGetPlate = (): ThunkAction<void, RootState, unknown, AnyAction> => {
+export const ThunkGetPlate = (uid: string): ThunkAction<void, RootState, unknown, AnyAction> => {
   return async (dispatch) => {
-    const { data } = await plateApi.get(`/Plates`);
+    console.log(uid);
+    const { data } = await plateApi.get(`/Plates/?uid=` + uid);
     dispatch(
       getPlate({
         isLoading: false,

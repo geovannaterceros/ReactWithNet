@@ -1,9 +1,9 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Button, Grid, TextField, Typography } from '@mui/material';
 import AuthLayout from '../layout/AuthLayout';
 import { Google } from '@mui/icons-material';
 import useForm from '~/hooks/useForm';
 import { startGoogleSignIn, startLoginWithEmailPassword } from '~/store/auth/thunks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '~/store';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<ThunkDispatch<RootState, unknown, AnyAction>>();
+  const { initialAuth } = useSelector((state: any) => state.auth);
   const { email, password, onInputChange } = useForm({ email: '', password: '' });
 
   const onGoogleSignIn = async () => {
@@ -21,6 +22,7 @@ export default function LoginPage() {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     await dispatch(startLoginWithEmailPassword(email, password));
+    //updateUser('Lizette');
     navigate('/plate');
   };
   return (
@@ -50,7 +52,15 @@ export default function LoginPage() {
               onChange={onInputChange}
             />
           </Grid>
-
+          <Grid
+            container
+            display={initialAuth.errorMessage !== 'Error autenticated' ? '' : 'none'}
+            sx={{ mt: 1 }}
+          >
+            <Grid item xs={12}>
+              <Alert severity='error'>{initialAuth.errorMessage}</Alert>
+            </Grid>
+          </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12} sm={6}>
               <Button variant='contained' type='submit' fullWidth>

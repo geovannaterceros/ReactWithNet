@@ -3,4 +3,5 @@ export interface Plate {
   name?: string;
   dateActivity: Date;
   offer: boolean;
+  uidUser?: string;
 }

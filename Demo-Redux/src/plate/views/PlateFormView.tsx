@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plate } from '../modals/Plate.models';
 import useForm from '~/hooks/useForm';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { RootState } from '~/store';
 import { ThunkPostPlate, ThunkUpdatePlate } from '~/store/plate/thunks';
@@ -25,6 +25,7 @@ export default function PlateFormView(props: Props) {
   const [selectedOffer, setSelectedOffer] = useState<string>(plate?.offer ? 'true' : 'false');
 
   const dispatch = useDispatch<ThunkDispatch<RootState, unknown, AnyAction>>();
+  const { initialAuth } = useSelector((state: any) => state.auth);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -41,6 +42,7 @@ export default function PlateFormView(props: Props) {
         name: name,
         dateActivity: new Date(selectedDate),
         offer: selectedOffer === 'true',
+        uidUser: initialAuth.uid,
       };
       dispatch(ThunkPostPlate(plateCreated));
     }

@@ -11,6 +11,8 @@ namespace ProgramsManager.Models.Models
         public DateTime DateActivity { get; set; }    
 
         public bool Offer { get; set; }
+
+        public string UIDUser { get; set; }
     }
 
 }

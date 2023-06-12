@@ -3,7 +3,7 @@ namespace ProgramsManager.DAL.Interfaces
 {
     public interface IDataAccess<TEntity> 
     {
-        Task<IEnumerable<TEntity>> GetAsync();
+        Task<IEnumerable<TEntity>> GetAsync(string uid);
 
         Task<TEntity> GetAsync(Guid id);
 

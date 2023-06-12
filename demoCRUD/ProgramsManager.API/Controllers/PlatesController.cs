@@ -16,9 +16,9 @@ namespace ProgramsManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync(string uid)
         {
-            IEnumerable<PlateDto> plates = await _platesService.GetAsync();
+            IEnumerable<PlateDto> plates = await _platesService.GetAsync(uid);
 
             if (plates.Any())
             {

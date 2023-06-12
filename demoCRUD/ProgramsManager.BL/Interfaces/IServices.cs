@@ -3,7 +3,7 @@ namespace ProgramsManager.BL.Interfaces
 {
     public interface IServices<TEntity>
     {
-        Task<IEnumerable<TEntity>> GetAsync();
+        Task<IEnumerable<TEntity>> GetAsync(string id);
 
         Task<TEntity> GetAsync(Guid id);
 

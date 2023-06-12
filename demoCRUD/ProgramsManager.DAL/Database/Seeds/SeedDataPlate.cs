@@ -7,9 +7,7 @@ namespace ProgramsManager.DAL.Database.Seeds
     {
         public static List<Plate> Plates = new List<Plate>()
         {
-            new Plate() { Id = Guid.NewGuid(), Name = "Blue 20", DateActivity= new DateTime(2023,2,13), Offer = true},
-            new Plate() { Id = Guid.NewGuid(), Name = "Orange 20", DateActivity= new DateTime(2023,05,13), Offer = false},
-            new Plate() { Id = Guid.NewGuid(), Name = "Black 20", DateActivity= new DateTime(2023,05,14), Offer = false}
+            new Plate() { Id = Guid.NewGuid(), Name = "Blue 20", DateActivity= new DateTime(2023,2,13), Offer = true, UIDUser= "DnwdIFJ3jpYiYqWnyNYAS5nb88g2"},
         };
     }
 }

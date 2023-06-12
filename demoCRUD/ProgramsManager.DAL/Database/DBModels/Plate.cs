@@ -18,5 +18,8 @@ namespace ProgramsManager.DAL.Database.DBModels
 
         [Required]
         public bool Offer { get; set; }
+
+        [Required]
+        public string UIDUser { get; set; }
     }
 }

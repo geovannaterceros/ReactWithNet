@@ -46,9 +46,9 @@ namespace ProgramsManager.DAL.Resources
 
         }
 
-        public async Task<IEnumerable<PlateDto>> GetAsync()
+        public async Task<IEnumerable<PlateDto>> GetAsync(string uidUser)
         {
-            IEnumerable<Plate> Plates = await _projectContext.Plates.ToListAsync();
+            IEnumerable<Plate> Plates = await _projectContext.Plates.Where(plate => plate.UIDUser == uidUser).ToListAsync();
 
             IEnumerable<PlateDto> PlatesDto = Plates.Select(Plate => _mapper.Map<PlateDto>(Plate));
 

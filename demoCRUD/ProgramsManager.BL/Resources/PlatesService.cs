@@ -38,9 +38,9 @@ namespace ProgramsManager.BL.Resources
             return PlateDtoDeleted;
         }
 
-        public async Task<IEnumerable<PlateDto>> GetAsync()
+        public async Task<IEnumerable<PlateDto>> GetAsync(string id)
         {
-            IEnumerable<PlateDto> PlateDtos = await _PlateDataAccess.GetAsync();
+            IEnumerable<PlateDto> PlateDtos = await _PlateDataAccess.GetAsync(id);
 
             return PlateDtos;
         }

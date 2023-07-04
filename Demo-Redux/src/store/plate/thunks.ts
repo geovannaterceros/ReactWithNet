@@ -7,7 +7,6 @@ import { Plate } from '~/plate/modals/Plate.models';
 
 export const ThunkGetPlate = (uid: string): ThunkAction<void, RootState, unknown, AnyAction> => {
   return async (dispatch) => {
-    console.log(uid);
     const { data } = await plateApi.get(`/Plates/?uid=` + uid);
     dispatch(
       getPlate({

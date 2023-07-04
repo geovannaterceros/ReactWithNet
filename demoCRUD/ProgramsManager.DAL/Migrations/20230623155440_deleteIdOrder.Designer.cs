@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProgramsManager.DAL.Database;
 
@@ -11,9 +12,11 @@ using ProgramsManager.DAL.Database;
 namespace ProgramsManager.DAL.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20230623155440_deleteIdOrder")]
+    partial class deleteIdOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,7 +86,7 @@ namespace ProgramsManager.DAL.Migrations
 
                     b.HasIndex("PlateId");
 
-                    b.ToTable("OrderPlate", (string)null);
+                    b.ToTable("OrdersPlates");
                 });
 
             modelBuilder.Entity("ProgramsManager.DAL.Database.DBModels.Plate", b =>

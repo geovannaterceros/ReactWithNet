@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-using ProgramsManager.Models.Models;
-
+using ProgramsManager.Models.Models.Plate;
 
 namespace ProgramsManager.BL.Validators
 {

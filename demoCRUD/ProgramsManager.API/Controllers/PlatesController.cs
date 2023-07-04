@@ -1,24 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ProgramsManager.BL.Interfaces;
-using ProgramsManager.Models.Models;
+using ProgramsManager.Models.Models.Plate;
 
 namespace ProgramsManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/restaurant/menu/{menuId:Guid}/plate")]
     [ApiController]
     public class PlatesController : ControllerBase
     {
         private readonly IServices<PlateDto> _platesService;
-        public PlatesController(IServices<PlateDto> platesService)
+        private readonly IMapper _mapper;
+
+        public PlatesController(IServices<PlateDto> platesService, IMapper mapper)
         {
             _platesService = platesService;
-
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync(string uid)
+        public async Task<IActionResult> GetAsync(Guid menuId, string uid)
         {
-            IEnumerable<PlateDto> plates = await _platesService.GetAsync(uid);
+            IEnumerable<PlateDto> plates = await _platesService.GetAsync(uid, menuId);
 
             if (plates.Any())
             {
@@ -28,7 +31,7 @@ namespace ProgramsManager.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(Guid id)
+        public async Task<IActionResult> GetIdAsync(Guid id)
         {
             PlateDto PlateDto = await _platesService.GetAsync(id);
             if (PlateDto is not null)
@@ -40,13 +43,15 @@ namespace ProgramsManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(PlateDto PlateDto)
+        public async Task<IActionResult> CreateAsync(Guid menuId, PlateCreateDto createPlateDto)
         {
-            PlateDto PlateDtoCreated = await _platesService.CreateAsync(PlateDto);
+            PlateDto plate = _mapper.Map<PlateDto>(createPlateDto);
+            plate.MenuId = menuId;
+            PlateDto plateDtoCreated = await _platesService.CreateAsync(plate, menuId);
 
-            if (PlateDtoCreated is not null)
+            if (plateDtoCreated is not null)
             {
-                return Created(nameof(CreateAsync), PlateDtoCreated);
+                return Created(nameof(CreateAsync), plateDtoCreated);
             }
 
             return BadRequest();

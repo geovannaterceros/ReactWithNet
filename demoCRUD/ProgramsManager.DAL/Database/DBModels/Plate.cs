@@ -7,7 +7,7 @@ namespace ProgramsManager.DAL.Database.DBModels
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [StringLength(50)]
@@ -21,5 +21,11 @@ namespace ProgramsManager.DAL.Database.DBModels
 
         [Required]
         public string UIDUser { get; set; }
+
+        public Guid MenuId { get; set; }
+
+        public Menu Menu { get; set; }
+
+        public List<OrderPlate> OrdersPlates { get; set; }
     }
 }

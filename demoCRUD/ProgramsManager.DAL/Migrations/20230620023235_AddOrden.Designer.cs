@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProgramsManager.DAL.Database;
 
@@ -11,9 +12,11 @@ using ProgramsManager.DAL.Database;
 namespace ProgramsManager.DAL.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20230620023235_AddOrden")]
+    partial class AddOrden
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +74,7 @@ namespace ProgramsManager.DAL.Migrations
                     b.Property<Guid>("OrdenId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OrderId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PlateId")
@@ -83,7 +86,7 @@ namespace ProgramsManager.DAL.Migrations
 
                     b.HasIndex("PlateId");
 
-                    b.ToTable("OrderPlate", (string)null);
+                    b.ToTable("OrdersPlates");
                 });
 
             modelBuilder.Entity("ProgramsManager.DAL.Database.DBModels.Plate", b =>
@@ -153,7 +156,9 @@ namespace ProgramsManager.DAL.Migrations
                 {
                     b.HasOne("ProgramsManager.DAL.Database.DBModels.Order", "Order")
                         .WithMany("OrdensPlates")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProgramsManager.DAL.Database.DBModels.Plate", "Plate")
                         .WithMany("OrdersPlates")

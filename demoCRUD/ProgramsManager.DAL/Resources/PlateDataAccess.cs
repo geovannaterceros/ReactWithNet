@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProgramsManager.DAL.Database;
 using ProgramsManager.DAL.Database.DBModels;
 using ProgramsManager.DAL.Interfaces;
-using ProgramsManager.Models.Models;
+using ProgramsManager.Models.Models.Plate;
 
 namespace ProgramsManager.DAL.Resources
 {
@@ -16,21 +16,27 @@ namespace ProgramsManager.DAL.Resources
             _projectContext = projectContext;
             _mapper = mapper;
         }
-        public async Task<PlateDto> CreateAsync(PlateDto Plate)
+        public async Task<PlateDto> CreateAsync(PlateDto Plate, Guid? menuId)
         {
-            Plate PlateToCreate = _mapper.Map<Plate>(Plate);
+            Menu menu = await _projectContext.Menus.FirstAsync(x => x.Id.ToString() == menuId.ToString());
 
-            await _projectContext.Plates.AddAsync(PlateToCreate);
+            if (menu is null)
+            {
+                return null;
+            }
+
+            Plate plateToCreate = _mapper.Map<Plate>(Plate);
+            await _projectContext.AddAsync(plateToCreate);
             await _projectContext.SaveChangesAsync();
 
             return Plate;
 
         }
 
-        public async Task<PlateDto?> DeleteAsync(Guid id)
+        public async Task<PlateDto> DeleteAsync(Guid id)
         {
-            Plate? PlateToDelete = await _projectContext.Plates
-                .FirstOrDefaultAsync(c => c.Id == id);
+            Plate PlateToDelete = await _projectContext.Plates
+                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (PlateToDelete is null)
             {
@@ -46,18 +52,30 @@ namespace ProgramsManager.DAL.Resources
 
         }
 
-        public async Task<IEnumerable<PlateDto>> GetAsync(string uidUser)
+        public async Task<IEnumerable<PlateDto>> GetAsync<TId>(TId uid, Guid? menuId)
         {
-            IEnumerable<Plate> Plates = await _projectContext.Plates.Where(plate => plate.UIDUser == uidUser).ToListAsync();
+            Menu menu = await _projectContext.Menus.FirstAsync(x=> x.Id.ToString() == menuId.ToString());
+            
+            if (menu is null) 
+            {
+                return null;
+            }
 
-            IEnumerable<PlateDto> PlatesDto = Plates.Select(Plate => _mapper.Map<PlateDto>(Plate));
+            IEnumerable<Plate> plates = await _projectContext.Plates.Where(plate => plate.UIDUser == uid.ToString())
+                  .Include(x => x.OrdersPlates)
+                 .ThenInclude(x => x.Order)
+                 .ToListAsync();
 
-            return PlatesDto;
+            return _mapper.Map<List<PlateDto>>(plates);
+
         }
 
         public async Task<PlateDto> GetAsync(Guid id)
         {
-            Plate? PlateFound = await _projectContext.Plates.FirstOrDefaultAsync(c => c.Id == id);
+            Plate PlateFound = await _projectContext.Plates
+                  .Include(x => x.OrdersPlates)
+                 .ThenInclude(x => x.Order)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (PlateFound is null) 
             {
@@ -69,7 +87,7 @@ namespace ProgramsManager.DAL.Resources
             return PlateDto;
         }
 
-        public async Task<PlateDto?> UpdateAsync(Guid id, PlateDto entity)
+        public async Task<PlateDto> UpdateAsync(Guid id, PlateDto entity)
         {
             Plate? PlateToUpdate = await _projectContext.Plates.FirstOrDefaultAsync(c=> c.Id == id);
 

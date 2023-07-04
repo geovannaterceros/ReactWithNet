@@ -4,7 +4,10 @@ using ProgramsManager.BL.Resources;
 using ProgramsManager.DAL.Database;
 using ProgramsManager.DAL.Interfaces;
 using ProgramsManager.DAL.Resources;
-using ProgramsManager.Models.Models;
+using ProgramsManager.Models.Models.Menu;
+using ProgramsManager.Models.Models.Order;
+using ProgramsManager.Models.Models.Plate;
+using ProgramsManager.Models.Models.Restaurant;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,9 +34,15 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectDB")));
 
 //Data Access
 builder.Services.AddScoped<IDataAccess<PlateDto>, PlateDataAccess>();
+builder.Services.AddScoped<IDataAccess<RestaurantDto>, RestaurantDataAccess>();
+builder.Services.AddScoped<IDataAccess<MenuDto>, MenuDataAccess>();
+builder.Services.AddScoped<IDataAccess<OrderDto>, OrderDataAccess>();
 
 //Bussiness Logic
 builder.Services.AddScoped<IServices<PlateDto>, PlatesService>();
+builder.Services.AddScoped<IServices<RestaurantDto>, RestaurantService>();
+builder.Services.AddScoped<IServices<MenuDto>, MenuService>();
+builder.Services.AddScoped<IServices<OrderDto>, OrderService>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

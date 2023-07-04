@@ -29,7 +29,7 @@ namespace ProgramsManager.DAL.Resources
             await _projectContext.AddAsync(plateToCreate);
             await _projectContext.SaveChangesAsync();
 
-            return Plate;
+            return _mapper.Map<PlateDto>(plateToCreate);
 
         }
 
@@ -61,8 +61,9 @@ namespace ProgramsManager.DAL.Resources
                 return null;
             }
 
-            IEnumerable<Plate> plates = await _projectContext.Plates.Where(plate => plate.UIDUser == uid.ToString())
-                  .Include(x => x.OrdersPlates)
+            IEnumerable<Plate> plates = await _projectContext.Plates
+                 .Where(plate => plate.UIDUser == uid.ToString())
+                 .Include(x => x.OrdersPlates)
                  .ThenInclude(x => x.Order)
                  .ToListAsync();
 

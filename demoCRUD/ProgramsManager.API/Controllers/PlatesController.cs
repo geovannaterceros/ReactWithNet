@@ -51,7 +51,8 @@ namespace ProgramsManager.API.Controllers
 
             if (plateDtoCreated is not null)
             {
-                return Created(nameof(CreateAsync), plateDtoCreated);
+                PlateDtoCreated plateCreated = _mapper.Map<PlateDtoCreated>(plateDtoCreated);
+                return Created(nameof(CreateAsync), plateCreated);
             }
 
             return BadRequest();

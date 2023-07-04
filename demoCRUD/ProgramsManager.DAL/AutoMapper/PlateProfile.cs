@@ -18,11 +18,18 @@ namespace ProgramsManager.DAL.AutoMapper
 
             CreateMap<PlateCreateDto, PlateDto>()
                 .ForMember(x=> x.OrdersPlates, option => option.MapFrom(MapOrderPlates));
+
+            CreateMap<PlateDto, PlateDtoCreated>();
         }
 
         private List<OrderPlateDto> MapOrderPlates(PlateCreateDto plateCreateDto, PlateDto plateDto) 
         {
             List<OrderPlateDto> result = new List<OrderPlateDto>();
+
+            if (plateCreateDto.OrdersIds is null) 
+            {
+                return null;
+            }
 
             foreach (Guid idOrder in plateCreateDto.OrdersIds) 
             {
@@ -36,6 +43,11 @@ namespace ProgramsManager.DAL.AutoMapper
         {
             List<OrderPlate> result = new List<OrderPlate>();
 
+            if (plateDto.OrdersPlates is null) 
+            {
+                return null;
+            }
+
             foreach (OrderPlateDto orderPlate in plateDto.OrdersPlates)
             {
                 result.Add(new OrderPlate() { OrdenId = orderPlate.OrdenId, PlateId = orderPlate.PlateId });
@@ -47,6 +59,11 @@ namespace ProgramsManager.DAL.AutoMapper
         private List<OrderDto> MapOrders(Plate plateDto, PlateDto plate)
         {
             List<OrderDto> result = new List<OrderDto>();
+
+            if ( plateDto.OrdersPlates is null) 
+            {
+                return null;
+            }
 
             foreach (OrderPlate orderPlate in plateDto.OrdersPlates)
             {

@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.HttpSys;
 using ProgramsManager.BL.Interfaces;
 using ProgramsManager.Models.Models.Restaurant;
 
 namespace ProgramsManager.API.Controllers
 {
+    
     [Route("api/restaurant")]
     public class RestaurantController : ControllerBase
     {
@@ -18,6 +22,7 @@ namespace ProgramsManager.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAsync()
         {
             IEnumerable<RestaurantDto> restaurantDtos = await _restaurantService.GetAsync("");

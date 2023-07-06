@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProgramsManager.BL.Interfaces;
-using ProgramsManager.BL.Resources;
 using ProgramsManager.Models.Models.Menu;
-using ProgramsManager.Models.Models.Restaurant;
 
 namespace ProgramsManager.API.Controllers
 {
@@ -20,7 +18,7 @@ namespace ProgramsManager.API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAsync( Guid restaurantId)
+        public async Task<IActionResult> GetAsync(Guid restaurantId)
         {
             IEnumerable<MenuDto> menus = await _menuServices.GetAsync<Guid>(restaurantId);
 
@@ -31,7 +29,7 @@ namespace ProgramsManager.API.Controllers
             }
 
             return NoContent();
-            
+
         }
 
         [HttpPost]
@@ -41,8 +39,8 @@ namespace ProgramsManager.API.Controllers
             MenuDto menuDtoCreated = await _menuServices.CreateAsync(menu, restaurantId);
 
             if (menuDtoCreated is not null)
-            { 
-                MenuDtoShow menuShow = _mapper.Map<MenuDtoShow>(menuDtoCreated);  
+            {
+                MenuDtoShow menuShow = _mapper.Map<MenuDtoShow>(menuDtoCreated);
                 return Created(nameof(CreateAsync), menuShow);
             }
 

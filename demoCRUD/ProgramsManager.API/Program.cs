@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ProgramsManager.BL.Interfaces;
 using ProgramsManager.BL.Resources;
 using ProgramsManager.DAL.Database;
@@ -8,8 +11,31 @@ using ProgramsManager.Models.Models.Menu;
 using ProgramsManager.Models.Models.Order;
 using ProgramsManager.Models.Models.Plate;
 using ProgramsManager.Models.Models.Restaurant;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Authentication:Issuer"],
+        ValidAudience = builder.Configuration["Authentication:Audience"],
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["Authentication:SecretKey"])),
+        //Define el margen de tiempo
+        ClockSkew = TimeSpan.Zero
+      
+    };
+});
 
 builder.Services.AddCors(options =>
 {
@@ -20,10 +46,6 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader();
     });
 });
-
-//// Add services to the container.
-
-//builder.Services.AddControllers()
 
 // Add services to the containe.
 
@@ -55,6 +77,32 @@ builder.Services.AddScoped<IServices<OrderDto>, OrderService>();
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web Service Api Restaurant", Version = "v2" });
+
+    // Configuración del esquema Bearer
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "JWT Authorization header using the Bearer scheme",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+    };
+
+    c.AddSecurityDefinition("Bearer", securityScheme);
+
+    var securityRequirement = new OpenApiSecurityRequirement
+    {
+        { securityScheme, new List<string>() }
+    };
+
+    c.AddSecurityRequirement(securityRequirement);
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -62,6 +110,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<ProjectContext>();
     context.Database.Migrate();
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,6 +121,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

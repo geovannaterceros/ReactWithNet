@@ -44,10 +44,10 @@ namespace ProgramsManager.DAL.Resources
 
         public async Task<MenuDto> GetAsync(Guid id)
         {
-            Menu menu =  _projectContext.Menus.Include(x=> x.Plates)
+            Menu menu =  await _projectContext.Menus.Include(x=> x.Plates)
                 .ThenInclude(x => x.OrdersPlates)
                 .ThenInclude(x => x.Order)
-                .FirstOrDefault(x => x.Id.ToString() == id.ToString());
+                .FirstOrDefaultAsync(x => x.Id.ToString() == id.ToString());
 
             if (menu is null)
             {

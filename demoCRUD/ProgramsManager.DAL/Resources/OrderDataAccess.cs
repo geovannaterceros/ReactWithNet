@@ -35,10 +35,10 @@ namespace ProgramsManager.DAL.Resources
 
         public async Task<IEnumerable<OrderDto>> GetAsync<TId>(TId id, Guid? uid = null)
         {
-            IEnumerable<Order> order = _projectContext.Orders
+            IEnumerable<Order> order = await _projectContext.Orders
                 .Include(x=> x.OrdensPlates)
                 .ThenInclude(x => x.Plate)
-                .ToList();
+                .ToListAsync();
 
             return _mapper.Map<List<OrderDto>>(order);
         }

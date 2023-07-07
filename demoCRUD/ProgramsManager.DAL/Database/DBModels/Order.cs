@@ -15,5 +15,7 @@ namespace ProgramsManager.DAL.Database.DBModels
         public int NumberOrder { get; set; }
 
         public List<OrderPlate> OrdensPlates { get; set; }
+
+        public List<Plate> Plates { get; set; }
     }
 }

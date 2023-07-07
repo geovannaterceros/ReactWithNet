@@ -27,5 +27,7 @@ namespace ProgramsManager.DAL.Database.DBModels
         public Menu Menu { get; set; }
 
         public List<OrderPlate> OrdersPlates { get; set; }
+
+        public List<Order> Orders { get; set; }
     }
 }

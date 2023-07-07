@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.HttpSys;
 using ProgramsManager.BL.Interfaces;
 using ProgramsManager.Models.Models.Restaurant;
 
 namespace ProgramsManager.API.Controllers
 {
-    
+
     [Route("api/restaurant")]
     public class RestaurantController : ControllerBase
     {
@@ -18,7 +16,7 @@ namespace ProgramsManager.API.Controllers
         public RestaurantController(IServices<RestaurantDto> restaurantService, IMapper mapper)
         {
             _restaurantService = restaurantService;
-            _mapper= mapper;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -46,7 +44,7 @@ namespace ProgramsManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(RestaurantCreateDto restaurantToCreate) 
+        public async Task<IActionResult> CreateAsync(RestaurantCreateDto restaurantToCreate)
         {
             RestaurantDto restaurantDto = _mapper.Map<RestaurantDto>(restaurantToCreate);
             RestaurantDto restaurantDtoCreated = await _restaurantService.CreateAsync(restaurantDto);

@@ -62,7 +62,7 @@ namespace ProgramsManager.DAL.AutoMapper
 
             foreach (OrderPlate item in order.OrdensPlates)
             {
-                result.Add(new OrderPlate() { PlateId = item.PlateId, OrdenId = orderDto.Id});
+                result.Add(new OrderPlate() { PlateId = item.PlateId, OrderId = orderDto.Id});
             }
             return result;
         }

@@ -50,7 +50,7 @@ namespace ProgramsManager.DAL.AutoMapper
 
             foreach (OrderPlateDto orderPlate in plateDto.OrdersPlates)
             {
-                result.Add(new OrderPlate() { OrdenId = orderPlate.OrdenId, PlateId = orderPlate.PlateId });
+                result.Add(new OrderPlate() { OrderId = orderPlate.OrdenId, PlateId = orderPlate.PlateId });
             }
 
             return result;

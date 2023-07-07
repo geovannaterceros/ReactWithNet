@@ -32,6 +32,11 @@ namespace ProgramsManager.DAL.Database
             modelBuilder.Entity<Menu>().ToTable("Menu");
             modelBuilder.Entity<Plate>().ToTable("Plate");
             modelBuilder.Entity<Order>().ToTable("Order");
+            modelBuilder.Entity<Order>()
+                .HasMany(e => e.Plates)
+                .WithMany(e => e.Orders)
+                .UsingEntity<OrderPlate>();
+
             modelBuilder.Entity<OrderPlate>().ToTable("OrderPlate");
         }
     }

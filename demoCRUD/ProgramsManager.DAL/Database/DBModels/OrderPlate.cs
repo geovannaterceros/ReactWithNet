@@ -9,7 +9,7 @@ namespace ProgramsManager.DAL.Database.DBModels
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid OrdenId { get; set; }
+        public Guid OrderId { get; set; }
 
         public Guid PlateId { get; set; }
 
